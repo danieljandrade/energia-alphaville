@@ -1,8 +1,10 @@
-from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, Depends, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 import sqlite3
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
 
 DB_NAME = 'energia_alphaville.db'
 
@@ -28,26 +30,14 @@ def get_db():
     finally:
         conn.close()
 
-class User(BaseModel):
-    username: str
-    password: str
-    is_admin: bool = False
-
-@app.post("/register")
-def register_user(user: User, db: sqlite3.Connection = Depends(get_db)):
-    try:
-        db.execute("INSERT INTO users (username, password, is_admin) VALUES (?, ?, ?)",
-                   (user.username, user.password, user.is_admin))
-        db.commit()
-        return {"message": "Usuário cadastrado com sucesso!"}
-    except sqlite3.IntegrityError:
-        raise HTTPException(status_code=400, detail="Usuário já existe.")
+@app.get("/", response_class=HTMLResponse)
+def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
 
 @app.post("/login")
-def login(user: User, db: sqlite3.Connection = Depends(get_db)):
+def login(username: str = Form(...), password: str = Form(...), db: sqlite3.Connection = Depends(get_db)):
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", 
-                   (user.username, user.password))
+    cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
     result = cursor.fetchone()
     if result:
         return {"message": "Login realizado com sucesso!"}
