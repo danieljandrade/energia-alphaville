@@ -9,6 +9,12 @@
 <body>
     <div class="container">
         <h2>Login - Energia Alphaville</h2>
+
+        <!-- MENSAGEM DE SUCESSO -->
+        {% if request.query_params.get('msg') == 'success' %}
+            <p style="color: green;">✅ Cadastro realizado com sucesso! Faça login.</p>
+        {% endif %}
+
         <form action="/login" method="post">
             <input type="text" name="username" placeholder="Usuário" required><br>
             <input type="password" name="password" placeholder="Senha" required><br>
