@@ -62,3 +62,17 @@ a {
 a:hover {
     text-decoration: underline;
 }
+/* Responsividade para dispositivos móveis */
+@media (max-width: 600px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    button {
+        padding: 10px;
+        font-size: 14px;
+    }
+}

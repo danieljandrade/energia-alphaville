@@ -6,7 +6,8 @@ import sqlite3
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
-DB_NAME = 'energia_alphaville.db'
+DB_NAME = 'database/energia_alphaville.db'
+
 
 def get_db():
     conn = sqlite3.connect(DB_NAME)
